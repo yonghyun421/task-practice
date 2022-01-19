@@ -10,7 +10,7 @@ import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { styled } from "@mui/material/styles";
 import { orange, teal } from "@mui/material/colors";
 
-const NewApp = () => {
+const AgnMui = () => {
   const [gridApi, setGridApi] = useState(null);
   const [gridColumnApi, setGridColumnApi] = useState(null);
   const [rowData, setRowData] = useState(data);
@@ -95,7 +95,7 @@ const NewApp = () => {
   );
 };
 
-export default NewApp;
+export default AgnMui;
 
 // mui 이용해서 기존 Button 컴포넌트 CSS 수정해서 사용하기
 const CancelBtn = styled(Button)(({ theme }) => ({

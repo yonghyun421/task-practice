@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import NewApp from "./newApp";
+import AgnMui from "./AgnMui";
 
 ReactDOM.render(
   <React.StrictMode>
     {/* <App /> */}
-    <NewApp />
+    <AgnMui />
   </React.StrictMode>,
   document.getElementById("root")
 );
