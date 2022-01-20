@@ -16,23 +16,23 @@ const AgnMui = () => {
   const [rowData, setRowData] = useState(data);
 
   const columnDefs = [
-    [
-      {
-        field: "athlete",
-        minWidth: 150,
-        checkboxSelection: true,
-      },
-      { field: "age", maxWidth: 90 },
-      { field: "country", minWidth: 150 },
-      { field: "sport", minWidth: 150 },
-      { field: "gold" },
-    ],
+    {
+      field: "athlete",
+      minWidth: 150,
+      checkboxSelection: true,
+      enableRowGroup: true,
+    },
+    { field: "age", maxWidth: 90, enableRowGroup: true, rowGroup: true },
+    { field: "country", minWidth: 150, enableRowGroup: true },
+    { field: "sport", minWidth: 150, enableRowGroup: true },
+    { field: "gold", enableRowGroup: true },
   ];
 
   const gridOptions = {
     defaultColDef: {
       resizable: true,
       sortable: true,
+      editable: true,
     },
     columnDefs: columnDefs,
     rowData: null,
@@ -41,7 +41,19 @@ const AgnMui = () => {
         params.api.setRowData(data);
       }, 2000);
     },
-    rowSelection: "multiple",
+    // rowSelection: "multiple",
+    // suppressDragLeaveHidesColumns: true,
+    // suppressMakeColumnVisibleAfterUnGroup: true,
+    rowGroupPanelShow: "always",
+    statusBar: {
+      statusPanels: [
+        { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+        { statusPanel: "agTotalRowCountComponent", align: "center" },
+        { statusPanel: "agFilteredRowCountComponent" },
+        { statusPanel: "agSelectedRowCountComponent" },
+        { statusPanel: "agAggregationComponent" },
+      ],
+    },
   };
 
   const onGridReady = (params) => {
@@ -77,6 +89,17 @@ const AgnMui = () => {
     // console.log(selectedData);
   };
 
+  const removeAll = () => {
+    gridOptions.api.selectAll();
+    // 전체 선택
+    var allData = gridOptions.api.getSelectedRows();
+
+    console.log(allData);
+
+    var res = gridOptions.api.updateRowData({ remove: allData });
+    console.log(res);
+  };
+
   return (
     <div
       className="ag-theme-alpine"
@@ -84,12 +107,18 @@ const AgnMui = () => {
     >
       <CancelBtn onClick={onAddRow}>추가</CancelBtn>
       <Button onClick={onRemoveSelected}>삭제</Button>
+      <CancelBtn onClick={removeAll}>전체 삭제</CancelBtn>
       <AgGridReact gridOptions={gridOptions}>
-        <AgGridColumn field="athlete" minWidth={150} checkboxSelection={true} />
-        <AgGridColumn field="age" />
-        <AgGridColumn field="country" />
-        <AgGridColumn field="sport" />
-        <AgGridColumn field="gold" />
+        {/* <AgGridColumn
+          field="athlete"
+          minWidth={150}
+          checkboxSelection={true}
+          enableRowGroup={true}
+        />
+        <AgGridColumn field="age" enableRowGroup={true} rowGroup={true} />
+        <AgGridColumn field="country" enableRowGroup={true} />
+        <AgGridColumn field="sport" enableRowGroup={true} />
+        <AgGridColumn field="gold" enableRowGroup={true} /> */}
       </AgGridReact>
     </div>
   );
