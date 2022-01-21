@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import Button from "@mui/material/Button";
 
@@ -9,8 +9,10 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 import { styled } from "@mui/material/styles";
 import { orange, teal } from "@mui/material/colors";
+import "./App.css";
 
 const AgnMui = () => {
+  const [open, setOpen] = useState(false);
   const [gridApi, setGridApi] = useState(null);
   const [gridColumnApi, setGridColumnApi] = useState(null);
   const [rowData, setRowData] = useState(data);
@@ -22,18 +24,64 @@ const AgnMui = () => {
       checkboxSelection: true,
       enableRowGroup: true,
     },
-    { field: "age", maxWidth: 90, enableRowGroup: true, rowGroup: true },
+    {
+      field: "age",
+      maxWidth: 90,
+      hide: true,
+      rowGroup: true,
+    },
     { field: "country", minWidth: 150, enableRowGroup: true },
     { field: "sport", minWidth: 150, enableRowGroup: true },
     { field: "gold", enableRowGroup: true },
   ];
 
+  const rowSelected = (e) => {
+    console.log(e.node);
+    // console.log(e.node["expanded"]);
+    // e.node["expanded"] = !e.node["expanded"];
+    // setOpen(!open);
+  };
+
+  // 일단 현재 탭 누르면 다른 탭은 닫히긴 하는대 모든 행에서 다 반응해서 그부분 수정 필요
+  const moreBigger = (e) => {
+    console.log(e.node.key * 1);
+    gridOptions.api.forEachNode(function (node) {
+      if (node.key === e.node.key) {
+        // && typeof (node.key * 1) === Number
+        node.setExpanded(true);
+      } else {
+        node.setExpanded(false);
+      }
+    });
+  };
+
+  const checkForEmptySevone = (node) => {
+    var rowData = node.childrenAfterGroup[0].data;
+    if (
+      rowData.get("SEVONE_ID") === " " ||
+      rowData.get("SEVONE_ID") === "" ||
+      rowData.get("SEVONE_ID") === undefined ||
+      rowData.get("SEVONE_ID") === null
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const gridOptions = {
     defaultColDef: {
+      flex: 1,
+      minWidth: 150,
+      filter: true,
+      floatingFilter: true,
       resizable: true,
-      sortable: true,
-      editable: true,
     },
+    autoGroupColumnDef: {
+      filterValueGetter: (params) => params.data.country,
+    },
+    groupDisplayType: "singleColumn",
+    animateRows: true,
     columnDefs: columnDefs,
     rowData: null,
     onGridReady: function (params) {
@@ -44,7 +92,7 @@ const AgnMui = () => {
     // rowSelection: "multiple",
     // suppressDragLeaveHidesColumns: true,
     // suppressMakeColumnVisibleAfterUnGroup: true,
-    rowGroupPanelShow: "always",
+    // rowGroupPanelShow: "always",
     statusBar: {
       statusPanels: [
         { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
@@ -54,7 +102,34 @@ const AgnMui = () => {
         { statusPanel: "agAggregationComponent" },
       ],
     },
+    onRowClicked: moreBigger,
+    rowClassRules: {
+      manualExpand: function (params) {
+        if (
+          params.node.field === "outageName" &&
+          params.node.expanded === false
+        ) {
+          var expandFlag = checkForEmptySevone(params.node);
+          return expandFlag;
+        }
+      },
+
+      expandAll: function (params) {
+        if (
+          params.node.field === "outageName" &&
+          params.node.expanded === true
+        ) {
+          var expandAllFlag = checkForEmptySevone(params.node);
+          return expandAllFlag;
+        }
+      },
+    },
   };
+
+  //   function setRowNodeExpanded(
+  //     rowNode: RowNode,
+  //     expanded: boolean
+  // ): void;
 
   const onGridReady = (params) => {
     setGridApi(params.api);
@@ -100,14 +175,24 @@ const AgnMui = () => {
     console.log(res);
   };
 
+  console.log(columnDefs);
+
+  const getSelectedRowData = () => {
+    let selectedNodes = this.gridApi.getSelectedNodes();
+    let selectedData = selectedNodes.map((node) => node.data);
+    alert(`Selected Nodes:\n${JSON.stringify(selectedData)}`);
+    return selectedData;
+  };
+
   return (
     <div
       className="ag-theme-alpine"
-      style={{ height: "500px", width: "100vw" }}
+      style={{ height: "800px", width: "100vw" }}
     >
       <CancelBtn onClick={onAddRow}>추가</CancelBtn>
       <Button onClick={onRemoveSelected}>삭제</Button>
       <CancelBtn onClick={removeAll}>전체 삭제</CancelBtn>
+      <Button onClick={getSelectedRowData}>선택한 노드</Button>
       <AgGridReact gridOptions={gridOptions}>
         {/* <AgGridColumn
           field="athlete"
