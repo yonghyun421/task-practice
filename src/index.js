@@ -6,13 +6,15 @@ import reportWebVitals from "./reportWebVitals";
 import AgnMui from "./AgnMui";
 import MuiTest from "./MuiTest";
 import MuiSignIn from "./MuiSignIn";
+import GetTest from "./GetTest";
 
 ReactDOM.render(
   <React.StrictMode>
     {/* <App /> */}
     {/* <AgnMui /> */}
     {/* <MuiTest /> */}
-    <MuiSignIn />
+    {/* <MuiSignIn /> */}
+    <GetTest />
   </React.StrictMode>,
   document.getElementById("root")
 );
