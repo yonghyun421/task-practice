@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
 
 import data from "./data.json";
-
-import "ag-grid-enterprise";
+// import "./grid.scss";
+// import "ag-grid-enterprise";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
@@ -122,15 +122,47 @@ const App = () => {
     }
   };
 
-  var gridOptions = {
+  var gridOptions1 = {
     defaultColDef: {
       resizable: true,
-
       sortable: true,
     },
-
+    undoRedoCellEditing: true,
+    undoRedoCellEditingLimit: 100,
+    enableCellChangeFlash: true,
+    groupDefaultExpanded: 1,
+    rowGroupPanelShow: "always",
+    groupHideOpenParents: true,
+    suppressAggFuncInHeader: true,
+    suppressPropertyNamesCheck: true,
+    enableRangeSelection: true,
+    suppressRowClickSelection: true,
     columnDefs: columnDefs,
+    rowData: null,
+    onGridReady: function (params) {
+      setTimeout(function () {
+        params.api.setRowData(data);
+      }, 2000);
+    },
 
+    rowSelection: "multiple", //추가한 코드. multiple 설정안하면 행 선택이 안되고 하나의 셀이 선택 되어 삭제가 불가능
+  };
+  var gridOptions2 = {
+    defaultColDef: {
+      resizable: true,
+      sortable: true,
+    },
+    undoRedoCellEditing: true,
+    undoRedoCellEditingLimit: 100,
+    enableCellChangeFlash: true,
+    groupDefaultExpanded: 1,
+    rowGroupPanelShow: "always",
+    groupHideOpenParents: true,
+    suppressAggFuncInHeader: true,
+    suppressPropertyNamesCheck: true,
+    enableRangeSelection: true,
+    suppressRowClickSelection: true,
+    columnDefs: columnDefs,
     rowData: null,
     onGridReady: function (params) {
       setTimeout(function () {
@@ -153,34 +185,66 @@ const App = () => {
     return newData;
   }
 
-  const onAddRow = () => {
-    var newItem = createNewRowData();
-    var res = gridOptions.api.updateRowData({ add: [newItem] });
+  // const onAddRow = () => {
+  //   var newItem = createNewRowData();
+  //   var res = gridOptions.api.updateRowData({ add: [newItem] });
 
-    console.log(res);
-  };
+  //   console.log(res);
+  // };
 
-  const onRemoveSelected = () => {
-    var selectedData = gridOptions.api.getSelectedRows();
-    var res = gridOptions.api.updateRowData({ remove: selectedData });
+  // const onRemoveSelected = () => {
+  //   var selectedData = gridOptions.api.getSelectedRows();
+  //   var res = gridOptions.api.updateRowData({ remove: selectedData });
 
-    console.log(res);
-  };
+  //   console.log(res);
+  // };
 
   return (
-    <div className="ag-theme-alpine" style={{ height: 400, width: 600 }}>
+    // <div className="dimension">
+    //   <div className="grid_shortter_box_with_upperFunction">
+    //     <div className="grid_top_area">
+    //       <div className="grid_single_line">
+    <div className="ag-theme-balham" style={{ height: 300, width: 600 }}>
       {/* <button onClick={gridOptions.onDeleteRow}>삭제</button> */}
-      <button onClick={onAddRow}>추가</button>
+      {/* <button>추가</button>
 
-      <button onClick={onRemoveSelected}>삭제</button>
-      <AgGridReact gridOptions={gridOptions}>
-        <AgGridColumn field="athlete" minWidth={150} checkboxSelection={true} />
-        <AgGridColumn field="age" />
-        <AgGridColumn field="country" />
-        <AgGridColumn field="sport" />
-        <AgGridColumn field="gold" />
-      </AgGridReact>
+      <button>삭제</button> */}
+      <div>
+        <AgGridReact gridOptions={gridOptions1}>
+          <AgGridColumn
+            field="athlete"
+            minWidth={150}
+            checkboxSelection={true}
+          />
+          <AgGridColumn field="age" />
+          <AgGridColumn field="country" />
+          <AgGridColumn field="sport" />
+          <AgGridColumn field="gold" />
+        </AgGridReact>
+      </div>
+      <div>
+        <AgGridReact gridOptions={gridOptions2}>
+          <AgGridColumn
+            field="athlete"
+            minWidth={150}
+            checkboxSelection={true}
+          />
+          <AgGridColumn field="age" />
+          <AgGridColumn field="country" />
+          <AgGridColumn field="sport" />
+          <AgGridColumn field="gold" />
+        </AgGridReact>
+      </div>
     </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
+    //  <div
+    //   className="grid_bot_area"
+    //   style={{ marginTop: 300, height: 300, width: 600 }}
+    // >
+    //   <div className="grid_single_line">
   );
 };
 

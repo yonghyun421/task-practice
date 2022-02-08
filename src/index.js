@@ -11,10 +11,10 @@ import GetTest from "./GetTest";
 ReactDOM.render(
   <React.StrictMode>
     {/* <App /> */}
-    {/* <AgnMui /> */}
+    <AgnMui />
     {/* <MuiTest /> */}
     {/* <MuiSignIn /> */}
-    <GetTest />
+    {/* <GetTest /> */}
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -45,14 +45,14 @@ const AgnMui = () => {
   // 일단 현재 탭 누르면 다른 탭은 닫히긴 하는대 모든 행에서 다 반응해서 그부분 수정 필요
   const moreBigger = (e) => {
     console.log(e.node.key * 1);
-    gridOptions.api.forEachNode(function (node) {
-      if (node.key === e.node.key) {
-        // && typeof (node.key * 1) === Number
-        node.setExpanded(true);
-      } else {
-        node.setExpanded(false);
-      }
-    });
+    // gridOptions.api.forEachNode(function (node) {
+    //   if (node.key === e.node.key) {
+    //     // && typeof (node.key * 1) === Number
+    //     node.setExpanded(true);
+    //   } else {
+    //     node.setExpanded(false);
+    //   }
+    // });
   };
 
   const checkForEmptySevone = (node) => {
@@ -69,7 +69,64 @@ const AgnMui = () => {
     }
   };
 
-  const gridOptions = {
+  const gridOptions1 = {
+    defaultColDef: {
+      flex: 1,
+      minWidth: 150,
+      filter: true,
+      floatingFilter: true,
+      resizable: true,
+    },
+    autoGroupColumnDef: {
+      filterValueGetter: (params) => params.data.country,
+    },
+    groupDisplayType: "singleColumn",
+    animateRows: true,
+    columnDefs: columnDefs,
+    rowData: null,
+    onGridReady: function (params) {
+      setTimeout(function () {
+        params.api.setRowData(data);
+      }, 2000);
+    },
+    // rowSelection: "multiple",
+    // suppressDragLeaveHidesColumns: true,
+    // suppressMakeColumnVisibleAfterUnGroup: true,
+    // rowGroupPanelShow: "always",
+    statusBar: {
+      statusPanels: [
+        { statusPanel: "agTotalAndFilteredRowCountComponent", align: "left" },
+        { statusPanel: "agTotalRowCountComponent", align: "center" },
+        { statusPanel: "agFilteredRowCountComponent" },
+        { statusPanel: "agSelectedRowCountComponent" },
+        { statusPanel: "agAggregationComponent" },
+      ],
+    },
+    onRowClicked: moreBigger,
+    rowClassRules: {
+      manualExpand: function (params) {
+        if (
+          params.node.field === "outageName" &&
+          params.node.expanded === false
+        ) {
+          var expandFlag = checkForEmptySevone(params.node);
+          return expandFlag;
+        }
+      },
+
+      expandAll: function (params) {
+        if (
+          params.node.field === "outageName" &&
+          params.node.expanded === true
+        ) {
+          var expandAllFlag = checkForEmptySevone(params.node);
+          return expandAllFlag;
+        }
+      },
+    },
+  };
+
+  const gridOptions2 = {
     defaultColDef: {
       flex: 1,
       minWidth: 150,
@@ -148,32 +205,32 @@ const AgnMui = () => {
     return newData;
   }
 
-  const onAddRow = () => {
-    var newItem = createNewRowData();
-    var res = gridOptions.api.updateRowData({ add: [newItem] });
+  // const onAddRow = () => {
+  //   var newItem = createNewRowData();
+  //   var res = gridOptions.api.updateRowData({ add: [newItem] });
 
-    console.log(res);
-  };
+  //   console.log(res);
+  // };
 
-  const onRemoveSelected = () => {
-    console.log(gridOptions.api.updateRowData);
-    var selectedData = gridOptions.api.getSelectedRows();
-    var res = gridOptions.api.updateRowData({ remove: selectedData });
+  // const onRemoveSelected = () => {
+  //   console.log(gridOptions.api.updateRowData);
+  //   var selectedData = gridOptions.api.getSelectedRows();
+  //   var res = gridOptions.api.updateRowData({ remove: selectedData });
 
-    console.log(res);
-    // console.log(selectedData);
-  };
+  //   console.log(res);
+  //   // console.log(selectedData);
+  // };
 
-  const removeAll = () => {
-    gridOptions.api.selectAll();
-    // 전체 선택
-    var allData = gridOptions.api.getSelectedRows();
+  // const removeAll = () => {
+  //   gridOptions.api.selectAll();
+  //   // 전체 선택
+  //   var allData = gridOptions.api.getSelectedRows();
 
-    console.log(allData);
+  //   console.log(allData);
 
-    var res = gridOptions.api.updateRowData({ remove: allData });
-    console.log(res);
-  };
+  //   var res = gridOptions.api.updateRowData({ remove: allData });
+  //   console.log(res);
+  // };
 
   console.log(columnDefs);
 
@@ -186,14 +243,26 @@ const AgnMui = () => {
 
   return (
     <div
-      className="ag-theme-alpine"
-      style={{ height: "800px", width: "100vw" }}
+      className="ag-theme-balham"
+      style={{ height: "400px", width: "100vw" }}
     >
-      <CancelBtn onClick={onAddRow}>추가</CancelBtn>
-      <Button onClick={onRemoveSelected}>삭제</Button>
-      <CancelBtn onClick={removeAll}>전체 삭제</CancelBtn>
+      <CancelBtn>추가</CancelBtn>
+      <Button>삭제</Button>
+      <CancelBtn>전체 삭제</CancelBtn>
       <Button onClick={getSelectedRowData}>선택한 노드</Button>
-      <AgGridReact gridOptions={gridOptions}>
+      <AgGridReact gridOptions={gridOptions1}>
+        {/* <AgGridColumn
+          field="athlete"
+          minWidth={150}
+          checkboxSelection={true}
+          enableRowGroup={true}
+        />
+        <AgGridColumn field="age" enableRowGroup={true} rowGroup={true} />
+        <AgGridColumn field="country" enableRowGroup={true} />
+        <AgGridColumn field="sport" enableRowGroup={true} />
+        <AgGridColumn field="gold" enableRowGroup={true} /> */}
+      </AgGridReact>
+      <AgGridReact gridOptions={gridOptions2}>
         {/* <AgGridColumn
           field="athlete"
           minWidth={150}
